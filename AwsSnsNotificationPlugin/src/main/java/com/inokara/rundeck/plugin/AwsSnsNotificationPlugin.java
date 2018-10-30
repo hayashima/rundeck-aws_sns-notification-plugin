@@ -39,7 +39,7 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
   private String aws_sns_topic_arn;
 
   private String generateMessage(String trigger, Map executionData) {
-    String jobExecutionId = (String) executionData.get("id");
+    String jobExecutionId = executionData.get("id").toString();
     String startedAt = (String) executionData.get("dateStarted");
 
     Map jobData = (Map) executionData.get("job");
