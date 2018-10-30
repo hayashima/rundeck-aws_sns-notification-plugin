@@ -2,7 +2,7 @@ version = '0.0.1'
 defaultTasks 'clean','build'
 apply plugin: 'java'
 apply plugin: 'idea'
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 ext.rundeckPluginVersion= '1.1'
 
 configurations{
@@ -39,7 +39,3 @@ jar {
 }
 
 jar.dependsOn(copyToLib)
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
-}
