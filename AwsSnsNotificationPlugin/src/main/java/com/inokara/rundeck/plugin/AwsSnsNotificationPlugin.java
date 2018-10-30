@@ -13,6 +13,7 @@ import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty;
 import com.dtolabs.rundeck.plugins.notification.NotificationPlugin;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 @Plugin(service = "Notification", name = "AWS_SNS_Notification")
@@ -40,7 +41,7 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
 
   private String generateMessage(String trigger, Map executionData) {
     String jobExecutionId = executionData.get("id").toString();
-    String startedAt = (String) executionData.get("dateStarted");
+    Timestamp startedAt = (Timestamp) executionData.get("dateStarted");
 
     Map jobData = (Map) executionData.get("job");
     String jobName = (String) jobData.get("name");
