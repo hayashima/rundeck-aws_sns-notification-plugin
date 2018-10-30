@@ -42,12 +42,12 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
   private String generateMessage(String trigger, Map executionData) {
     String jobExecutionId = executionData.get("id").toString();
     Timestamp startedAt = (Timestamp) executionData.get("dateStarted");
+    String user = (String) executionData.get("user");
+    String jobUrl = (String) executionData.get("href");
 
     Map jobData = (Map) executionData.get("job");
     String jobName = (String) jobData.get("name");
-    String user = (String) jobData.get("user");
     String project = (String) jobData.get("project");
-    String jobUrl = (String) jobData.get("href");
 
     return String.format("Job `%s`(#%s) is %s.\n", jobName, jobExecutionId, trigger)
       + String.format("Project is %s.\n", project)
