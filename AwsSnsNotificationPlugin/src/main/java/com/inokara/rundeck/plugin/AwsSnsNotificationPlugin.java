@@ -13,6 +13,7 @@ import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty;
 import com.dtolabs.rundeck.plugins.notification.NotificationPlugin;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 @Plugin(service = "Notification", name = "AWS_SNS_Notification")
@@ -39,17 +40,19 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
   private String aws_sns_topic_arn;
 
   private String generateMessage(String trigger, Map executionData) {
-    Object job = executionData.get("job");
-    Object jobexecid = executionData.get("id");
-    //
-    Map jobdata = (Map) job;
-    Object obj = executionData.get("status");
-    String jobstatus = obj.toString().toUpperCase();
-    Object jobname = jobdata.get("name");
-    Object jobuser = jobdata.get("user");
-    Object jobproject = jobdata.get("project");
+    String jobExecutionId = executionData.get("id").toString();
+    Timestamp startedAt = (Timestamp) executionData.get("dateStarted");
+    String user = (String) executionData.get("user");
+    String jobUrl = (String) executionData.get("href");
 
-    return "Rundeck JOB: " + jobstatus + "[" + jobproject + "]" + "\"" + jobname + "\"" + "run by" + jobuser + "(#" + jobexecid + ")";
+    Map jobData = (Map) executionData.get("job");
+    String jobName = (String) jobData.get("name");
+    String project = (String) jobData.get("project");
+
+    return String.format("Job `%s`(#%s) is %s.\n", jobName, jobExecutionId, trigger)
+      + String.format("Project is %s.\n", project)
+      + String.format("Started at %s by %s.\n\n", startedAt, user)
+      + "Job Execution URL: " + jobUrl;
   }
 
   public boolean postNotification(String trigger, Map executionData, Map config) {
@@ -67,7 +70,9 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
         .build();
     }
     //
-    PublishRequest publishRequest = new PublishRequest(aws_sns_topic_arn, generateMessage(trigger, executionData));
+    String subject = "Rundeck job execution is " + trigger;
+    String message = generateMessage(trigger, executionData);
+    PublishRequest publishRequest = new PublishRequest(aws_sns_topic_arn, message, subject);
     PublishResult publishResult = snsClient.publish(publishRequest);
     return true;
   }
