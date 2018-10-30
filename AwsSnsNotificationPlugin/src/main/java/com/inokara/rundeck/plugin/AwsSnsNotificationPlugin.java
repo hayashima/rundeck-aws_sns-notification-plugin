@@ -1,14 +1,15 @@
 package com.inokara.rundeck.plugin;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.dtolabs.rundeck.plugins.notification.NotificationPlugin;
 import com.dtolabs.rundeck.core.plugins.Plugin;
 import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty;
 import java.util.*;
 
-import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
@@ -52,8 +53,10 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin{
 
   public boolean postNotification(String trigger, Map executionData, Map config) {
     BasicAWSCredentials awsCreds = new BasicAWSCredentials(aws_access_key, aws_secret_access_key);
-    AmazonSNSClient snsClient = new AmazonSNSClient(awsCreds);
-    snsClient.setRegion(Region.getRegion(Regions.fromName(aws_region)));
+    AmazonSNS snsClient = AmazonSNSClientBuilder.standard()
+        .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+        .withRegion(Regions.fromName(aws_region))
+        .build();
     //
     PublishRequest publishRequest = new PublishRequest(aws_sns_topic_arn, generateMessage(trigger, executionData));
     PublishResult publishResult = snsClient.publish(publishRequest);
