@@ -76,8 +76,13 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
     String subject = "Rundeck job execution is " + trigger;
     String message = generateMessage(trigger, executionData);
     PublishRequest publishRequest = new PublishRequest(aws_sns_topic_arn, message, subject);
-    PublishResult publishResult = snsClient.publish(publishRequest);
-    return true;
+    try {
+      PublishResult publishResult = snsClient.publish(publishRequest);
+      return true;
+    } catch (Exception ex) {
+      ex.printStackTrace(System.err);
+      return false;
+    }
   }
 
   private boolean isNullOrEmpty(String string) {
