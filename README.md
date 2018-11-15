@@ -45,3 +45,11 @@ the plugin use [DefaultAWSCredentialsProviderChain](https://docs.aws.amazon.com/
     * Credentials delivered through the Amazon EC2 container service if AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" environment variable is set and security manager has permission to access the variable,
     * Instance profile credentials delivered through the Amazon EC2 metadata service
 
+If set below value in `framework.properties` or `project.properties`,
+you can set empty to `AWS SNS Topic ARN` field.
+
+- project.properties
+    * project.plugin.Notification.AWS_SNS_Notification.aws_sns_topic_arn=value
+- framework.properties
+    * framework.plugin.Notification.AWS_SNS_Notification.aws_sns_topic_arn=value
+
