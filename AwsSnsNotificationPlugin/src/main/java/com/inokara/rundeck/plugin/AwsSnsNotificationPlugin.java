@@ -9,6 +9,7 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.dtolabs.rundeck.core.plugins.Plugin;
+import com.dtolabs.rundeck.core.plugins.configuration.PropertyScope;
 import com.dtolabs.rundeck.plugins.descriptions.PluginDescription;
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty;
 import com.dtolabs.rundeck.plugins.notification.NotificationPlugin;
@@ -35,8 +36,10 @@ public class AwsSnsNotificationPlugin implements NotificationPlugin {
 
   @PluginProperty(
     title = "AWS SNS Topic ARN",
-    description = "AWS SNS Topic ARN",
-    required = true)
+    description = "AWS SNS Topic ARN.\n" +
+      "Set empty if using system properties(`framework.properties` or `project.properties`).\n" +
+      "See `Plugin List(/menu/plugins)` page for detail.",
+    scope = PropertyScope.Instance)
   private String aws_sns_topic_arn;
 
   private String generateMessage(String trigger, Map executionData) {
